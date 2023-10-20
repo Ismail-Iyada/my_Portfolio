@@ -22,14 +22,14 @@ const socials = [
     icon: faLinkedin,
     url: "https://www.linkedin.com/in/ismail-iyada/",
   },
-  {
-    icon: faMedium,
-    url: "https://medium.com",
-  },
-  {
-    icon: faStackOverflow,
-    url: "https://stackoverflow.com",
-  },
+  // {
+  //   icon: faMedium,
+  //   url: "https://medium.com",
+  // },
+  // {
+  //   icon: faStackOverflow,
+  //   url: "https://stackoverflow.com",
+  // },
 ];
 
 /**
@@ -115,6 +115,10 @@ const Header = () => {
           <nav>
             <HStack spacing={8}>
               {/* Add links to Projects and Contact me section */}
+
+              <a href="/#about" onClick={handleClick("landing")}>
+                About
+              </a>
 
               <a href="/#projects" onClick={handleClick("projects")}>
                 Projects
