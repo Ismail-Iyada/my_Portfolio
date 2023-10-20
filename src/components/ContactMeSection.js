@@ -17,36 +17,41 @@ import FullScreenSection from "./FullScreenSection";
 import useSubmit from "../hooks/useSubmit";
 import { useAlertContext } from "../context/alertContext";
 
+/**
+ * Covers a complete form implementation using formik and yup for validation
+ */
+
 const ContactMeSection = () => {
   const { isLoading, response, submit } = useSubmit();
   const { onOpen } = useAlertContext();
-
-  const type = response ? response.type : null;
-  const message = response ? response.message : null;
 
   const formik = useFormik({
     initialValues: {
       firstName: "",
       email: "",
-      type: "",
+      type: "hireMe",
       comment: "",
     },
-    onSubmit: (initialValues, { resetForm }) => {
-      submit(initialValues, initialValues);
-      if (response && type) {
-        onOpen(type, message);
-      }
-      resetForm();
+    onSubmit: (initialValues) => {
+      submit("https://ismail.iyada/contactme", initialValues);
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Required"),
       email: Yup.string().email("Invalid email address").required("Required"),
-      type: Yup.string().notRequired(),
       comment: Yup.string()
         .required("Required")
         .min(25, "Must be at least 25 characters"),
     }),
   });
+
+  useEffect(() => {
+    if (response) {
+      onOpen(response.type, response.message);
+      if (response.type === "success") {
+        formik.resetForm();
+      }
+    }
+  },[response]);
 
   return (
     <FullScreenSection
@@ -64,7 +69,7 @@ const ContactMeSection = () => {
           <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
               <FormControl
-                isInvalid={formik.errors.firstName && formik.touched.firstName}
+                isInvalid={!!formik.errors.firstName && formik.touched.firstName}
               >
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
@@ -75,7 +80,7 @@ const ContactMeSection = () => {
                 <FormErrorMessage>{formik.errors.firstName}</FormErrorMessage>
               </FormControl>
               <FormControl
-                isInvalid={formik.errors.email && formik.touched.email}
+                isInvalid={!!formik.errors.email && formik.touched.email}
               >
                 <FormLabel htmlFor="email">Email Address</FormLabel>
                 <Input
@@ -101,7 +106,7 @@ const ContactMeSection = () => {
                 </Select>
               </FormControl>
               <FormControl
-                isInvalid={formik.errors.comment && formik.touched.comment}
+                isInvalid={!!formik.errors.comment && formik.touched.comment}
               >
                 <FormLabel htmlFor="comment">Your message</FormLabel>
                 <Textarea

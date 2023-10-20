@@ -32,6 +32,13 @@ const socials = [
   },
 ];
 
+/**
+ * This component illustrates the use of both the useRef hook and useEffect hook.
+ * The useRef hook is used to create a reference to a DOM element, in order to tweak the header styles and run a transition animation.
+ * The useEffect hook is used to perform a subscription when the component is mounted and to unsubscribe when the component is unmounted.
+ * Additionally, it showcases a neat implementation to smoothly navigate to different sections of the page when clicking on the header elements.
+ */
+
 const Header = () => {
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
@@ -45,48 +52,42 @@ const Header = () => {
   };
 
   const headerRef = useRef(null);
-  const [scrollUp, setScrollUp] = useState(true);
-  const prevScrollPosition = useRef(0);
-  // const transform = useRef("translateY(0)");
-  const [transform, setTransform] = useState("translateY(0)");
 
   useEffect(() => {
+    let prevScrollPos = window.scrollY;
+
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > prevScrollPosition.current) {
-        //scrolling down
-        if (scrollUp) {
-          setScrollUp(false);
-        }
-      } else if (currentScrollY < prevScrollPosition.current) {
-        //scrolling up
-        if (!scrollUp) {
-          setScrollUp(true);
-        }
+      const currentScrollPos = window.scrollY;
+      const headerElement = headerRef.current;
+      if (!headerElement) {
+        return;
       }
-      prevScrollPosition.current = currentScrollY;
-
-      setTransform(scrollUp ? "translateY(0)" : "translateY(-200px)");
+      if (prevScrollPos > currentScrollPos) {
+        headerElement.style.transform = "translateY(0)";
+      } else {
+        headerElement.style.transform = "translateY(-200px)";
+      }
+      prevScrollPos = currentScrollPos;
     };
-
     window.addEventListener("scroll", handleScroll);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [scrollUp]);
+  }, []);
 
   return (
     <Box
-      ref={headerRef}
       position="fixed"
       top={0}
       left={0}
       right={0}
       translateY={0}
-      style={{ transform: transform }} // Use style property for dynamic transform
+      transitionProperty="transform"
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      ref={headerRef}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -96,83 +97,32 @@ const Header = () => {
           alignItems="center"
         >
           <nav>
-            <HStack
-              spacing={8}
-              justifyContent="space-between"
-              alignItems="center"
-            >
+            <HStack spacing={8}>
               {/* Add social media links based on the `socials` data */}
-              {/* <Box>
-              <a href={socials[0].url}>
-                <FontAwesomeIcon
-                  icon={socials[0].icon}
-                  size="2x"
-                ></FontAwesomeIcon>
-              </a>
-              </Box>
-              <Box>
-              <a href={socials[1].url}>
-                <FontAwesomeIcon
-                  icon={socials[1].icon}
-                  size="2x"
-                ></FontAwesomeIcon>
-              </a>
-              </Box>
-              <Box>
-              <a href={socials[2].url}>
-                <FontAwesomeIcon
-                  icon={socials[2].icon}
-                  size="2x"
-                ></FontAwesomeIcon>
-              </a>
-              </Box>
-              <Box>
-              <a href={socials[3].url}>
-                <FontAwesomeIcon
-                  icon={socials[3].icon}
-                  size="2x"
-                ></FontAwesomeIcon>
-              </a>
-              </Box>
-              <Box>
-              <a href={socials[4].url}>
-                <FontAwesomeIcon
-                  icon={socials[4].icon}
-                  size="2x"
-                ></FontAwesomeIcon>
-              </a>
-              </Box> */}
 
-              {socials.map((social) => (
-                <Box key={social.url}>
-                  <a
-                    key={social.url}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FontAwesomeIcon
-                      icon={social.icon}
-                      size="2x"
-                    ></FontAwesomeIcon>
-                  </a>
-                </Box>
+              {socials.map(({ icon, url }) => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon icon={icon} size="2x" key={url} />
+                </a>
               ))}
             </HStack>
           </nav>
           <nav>
             <HStack spacing={8}>
               {/* Add links to Projects and Contact me section */}
-              <Box>
-                <a href="/#projects" onClick={handleClick("projects")}>
-                  Projects
-                </a>
-              </Box>
-              <Box>
-                <a href="/#contact-me" onClick={handleClick("contactme")}>
-                  Contact Me
-                </a>
-              </Box>
+
+              <a href="/#projects" onClick={handleClick("projects")}>
+                Projects
+              </a>
+
+              <a href="/#contactme" onClick={handleClick("contactme")}>
+                Contact Me
+              </a>
             </HStack>
           </nav>
         </HStack>

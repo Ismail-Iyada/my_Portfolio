@@ -3,6 +3,8 @@ import FullScreenSection from "./FullScreenSection";
 import { Box, Heading } from "@chakra-ui/react";
 import Card from "./Card";
 
+
+//gotta add a URL prop for the projects array
 const projects = [
   {
     title: "React Space",
@@ -52,6 +54,7 @@ const ProjectsSection = () => {
             key={project.title}
             title={project.title}
             description={project.description}
+            url="#"
             imageSrc={project.getImageSrc()}
           />
         ))}
