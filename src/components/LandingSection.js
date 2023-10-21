@@ -14,12 +14,12 @@ const LandingSection = () => (
     justifyContent="center"
     alignItems="center"
     isDarkBackground
-    backgroundColor="#2A4365"
+    backgroundColor="#2F5665"
     id="landing-section"
   >
     <VStack spacing={16}>
       <VStack spacing={4} alignItems="center">
-        <Avatar src={pfp} size="2xl" name="Your Name" />
+        <Avatar src={pfp} size="2xl" name="Ismail IYADA" />
         <Heading as="h4" size="md" noOfLines={1}>
           {greeting}
         </Heading>
